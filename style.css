@@ -1,0 +1,55 @@
+
+*{
+    background-color: pink;
+}
+body{
+    text-align: center;
+}
+h1{
+    font-family: "SN Pro", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 200px;
+    font-style: normal;
+}
+h2{
+    margin-top: 20px;
+    font-family: "SN Pro", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 200px;
+    font-style: normal;
+}
+button#button1, button#button2{
+  background-color: initial;
+  font-family: "SN Pro", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 500px;
+  font-style: normal;
+  background-image: linear-gradient(#8614f8 0, #760be0 100%);
+  border-radius: 20px;
+  border-style: none;
+  box-shadow: rgba(245, 244, 247, .25) 0 1px 1px inset;
+  cursor: pointer;
+  padding: 50px 140px;
+  text-align: center;
+  font-size: 30px;
+  margin: 90px;
+  margin-left: 300px;
+  margin-right: 300px;
+  margin-top: 50px;
+  transition: opacity 0.3s;
+}
+button#button1:hover{
+    transition: opacity 0.3s;
+    opacity: .7;
+}
+button#button2:hover{
+    transition: opacity 0.3s;
+    opacity: .7;
+}
+img{
+    display: block;
+    margin: 20px auto 0;
+    width: 400px;
+    height: 400px;
+    object-fit: cover;
+}
