@@ -268,7 +268,7 @@ document.getElementById("button1").addEventListener("click", function() {
         document.querySelector("button#button2").style.display = "none";
         document.querySelector("img").style.display = "block";
         document.querySelector("button#button2").style.marginLeft = "320px";
-        showAdvancement("Love at First Click", "You said yes on the first try!");
+        showAdvancement("Love at First Click 💖", "You said yes on the first try!");
     } else {
         const name = getNameFromQuery();
         document.getElementById("message").textContent = `YAAAY! I KNEW YOU WERE GOING TO DO IT! LOVE YOU TOO ${name}! ❤️`;
@@ -277,20 +277,43 @@ document.getElementById("button1").addEventListener("click", function() {
         document.querySelector("button#button2").style.display = "none";
         document.querySelector("img").style.display = "block";
         document.querySelector("button#button2").style.marginLeft = "320px";
-        showAdvancement("You Came Around", "You finally clicked yes.");
+        showAdvancement("You Came Around ❤️", "You finally clicked yes.");
+    }
+
+    const name = getNameFromQuery();
+    if (name.toLowerCase() === "adéla") {
+        showAdvancement("Secret Ending 🥳", "You unlocked the secret!");
+        document.getElementById("message").textContent = `Hold on... Your name is Adéla? I think I have something for you. ❤️`;
+        document.querySelector("img").style.display = "none";
+        document.querySelector("h1").style.display = "none";
+        document.querySelector("button#button1").style.display = "none";
+        document.querySelector("button#button2").style.display = "none";
+        
+        const loveLetter = document.createElement("div");
+        loveLetter.id = "love-letter";
+        loveLetter.style.cssText = "max-width: 600px; margin: 40px auto; padding: 30px; font-family: 'SN Pro', sans-serif; line-height: 1.8; font-size: 18px; text-align: center; color: #333;";
+        loveLetter.innerHTML = `
+            <p>Dear Adéla,</p>
+            <p style="margin-top: 20px;">TADY NAPSAT ZPRAVU!!!</p>
+            <p style="margin-top: 40px;">With all my love,</p>
+            <p>❤️</p>
+        `;
+        document.body.appendChild(loveLetter);
+        applyButton2Padding();
+        return;
     }
     applyButton2Padding();
 });
 
 document.getElementById("button2").addEventListener("click", function() {
     if (counter === 1) {
-        showAdvancement("First Rejection", "Ouch! You clicked no.");
+        showAdvancement("First Rejection 🥲", "Ouch! You clicked no. ");
     }
     if (counter === 3) {
-        showAdvancement("Still Nope", "Three no's already?!");
+        showAdvancement("Still Nope 😖", "Three no's already?! ");
     }
     if (counter === 5) {
-        showAdvancement("Cold Hearted", "Five no's in a row.");
+        showAdvancement("Cold Hearted 🩵", "Five no's in a row. ");
         const result = confirm("Are you sure you want to keep rejecting me?");
         if (result) {
             const result2 = confirm("Are you REALLY sure?");
@@ -320,7 +343,7 @@ document.getElementById("button2").addEventListener("click", function() {
     }
 
     if (counter === 8) {
-        showAdvancement("Persistent Rejection", "You kept rejecting even after all those confirmations!");
+        showAdvancement("Persistent Rejection 💔", "You kept rejecting even after all those confirmations!");
     }
 
     imageChange();
