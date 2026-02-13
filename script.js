@@ -281,21 +281,50 @@ document.getElementById("button1").addEventListener("click", function() {
     }
 
     const name = getNameFromQuery();
-    if (name.toLowerCase() === "adéla") {
+    if (name.toLowerCase() === "adéla" || name.toLowerCase() === "adela" || name.toLowerCase() === "adél" || name.toLowerCase() === "adel" || name.toLowerCase() === "adélaa" || name.toLowerCase() === "adelaa" || name.toLowerCase() === "adéla bartíková" || name.toLowerCase() === "adela bartíková" || name.toLowerCase() === "adél bartíková" || name.toLowerCase() === "adel bartíková") {
         showAdvancement("Secret Ending 🥳", "You unlocked the secret!");
-        document.getElementById("message").textContent = `Hold on... Your name is Adéla? I think I have something for you. ❤️`;
+        document.getElementById("message").textContent = `Hold on... Your name is ${name}? I think I have something for you. ❤️`;
         document.querySelector("img").style.display = "none";
         document.querySelector("h1").style.display = "none";
         document.querySelector("button#button1").style.display = "none";
         document.querySelector("button#button2").style.display = "none";
+        document.body.classList.add("letter-page");
         
         const loveLetter = document.createElement("div");
         loveLetter.id = "love-letter";
         loveLetter.style.cssText = "max-width: 600px; margin: 40px auto; padding: 30px; font-family: 'SN Pro', sans-serif; line-height: 1.8; font-size: 18px; text-align: center; color: #333;";
         loveLetter.innerHTML = `
-            <p>Dear Adéla,</p>
-            <p style="margin-top: 20px;">TADY NAPSAT ZPRAVU!!!</p>
-            <p style="margin-top: 40px;">With all my love,</p>
+            <p>Dear ${name},</p>
+            <p style="margin-top: 20px;">You are absolutely the best thing that has ever happened to me. At first, I wasnt
+            even sure if I should take the dance classes with you but now... I dont know what I would do without them and without you.
+            And after some time, I realized that Im no longer going to the dancing classes to dance... But mainly to be with you and
+            dance with you. And to be honest its crazy that I didnt want to fall in love ever again, because I didnt want to hurt anyone
+            anymore... But here I am now... Through out these 5 months dancing with you I started to fall in love again, even though
+            I promised to myself not to do it... At first I was scared to admit it even to myself, but now I can say it loud and clear...
+            Its just... You are an amazing person, you are so kind and caring. I probably wouldnt even be here without you...
+            You are always trying to help me and make me feel better when Im fighting with my problems, even though you have
+            your own problems to deal with... You are also funny and I cant stop laughing when Im with you (Except those
+            "Your mom" jokes, but I guess I have to deal with that xd). You are also sooo smart, like genuienly I cant get my
+            head around how can someone get 1st place in the english contest, get to compete in the tic-tac-toe and also play
+            sudoku (which I absolutely suck at and you are doing it in your free time(my brain would fry)), and still be sooo 
+            good at dancing. You are also so beautiful, like I dont even know how to describe it. Like your brown eyes are so
+            beautiful... I could stare into them for hours and I would never get bored. And your smile... It can light up the
+            whole world. And your laugh... Its so contagious, I just want to hear it all the time for the rest of my life, its
+            the best music to my ears. And your hair... I just want to run my fingers through it all the time, its so soft and
+            silky smooth. And your voice... Its so calming and soothing, I could listen to you talk for hours and I would
+            still want more. And your body... Its so perfect, I just want to hold you in my arms and never let go. You are just...
+            Perfect in every way, and Im so grateful to have you in my life. You are the only person I can be myself around, and 
+            also the only person Im not scared to tell my problems to, like until now, I was always so scared to tell anyone about my
+            problems, because I didnt want to be a burden to anyone, and I struggled with it for my whole life, but with you its 
+            different, I can tell you anything and I know you will understand... I want to thank you for that a thousand times and
+            it would still be not enough to express how grateful I am for that. And lastly I want you to know that I will always be here
+            for you no matter what, through thick and thin, in good times and bad. We dont even have to be together, I just want you to
+            be happy, and even if that means that you will be happy with someone else, I will still be happy for you, because your
+            happiness is all that matters to me. I love you so much Adél, and I hope we will keep talking and being in each other lives
+            for a loooooong time (forever if possible :)). I think this is everything I wanted to say to you through this letter, but if
+            I forgot to say something, just know that its also true and I love you with all my heart.
+             </p>
+            <p style="margin-top: 40px;">Happy Valentines Day!</p>
             <p>❤️</p>
         `;
         document.body.appendChild(loveLetter);
