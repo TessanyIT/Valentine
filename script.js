@@ -10,6 +10,7 @@ let textCounter = 1;
 let buttonPhraseCounter = 1;
 
 let counter = 1;
+
 function getNameFromQuery() {
     const params = new URLSearchParams(window.location.search);
     const name = params.get("name");
@@ -104,6 +105,45 @@ function getSafeTop() {
     return Math.ceil(Math.max(titleBottom, messageBottom) + 20);
 }
 
+function getAvoidRects() {
+    const elements = [
+        document.querySelector("h1"),
+        document.getElementById("message"),
+        document.querySelector("img")
+    ];
+    return elements
+        .filter((el) => el && el.style.display !== "none")
+        .map((el) => el.getBoundingClientRect());
+}
+
+function calculateMaxButtonSize(button, padding = 8) {
+    if (!button) return { maxWidth: 0, maxHeight: 0 };
+    const viewportWidth = window.innerWidth - padding * 2;
+    const viewportHeight = window.innerHeight - padding * 2;
+    const avoidRects = getAvoidRects();
+
+    let maxWidth = viewportWidth;
+    let maxHeight = viewportHeight;
+
+    avoidRects.forEach((rect) => {
+        const rectTop = Math.max(0, rect.top - padding);
+        const rectBottom = Math.min(window.innerHeight, rect.bottom + padding);
+        const rectLeft = Math.max(0, rect.left - padding);
+        const rectRight = Math.min(window.innerWidth, rect.right + padding);
+
+        const widthAround = Math.max(rectLeft, window.innerWidth - rectRight);
+        const heightAround = Math.max(rectTop, window.innerHeight - rectBottom);
+
+        maxWidth = Math.min(maxWidth, Math.max(0, widthAround));
+        maxHeight = Math.min(maxHeight, Math.max(0, heightAround));
+    });
+
+    return {
+        maxWidth: Math.max(0, maxWidth),
+        maxHeight: Math.max(0, maxHeight)
+    };
+}
+
 function isOverlapping(rectA, rectB) {
     return !(
         rectA.right <= rectB.left ||
@@ -117,6 +157,7 @@ function moveButtonsRandomly() {
     const button1 = document.getElementById("button1");
     const button2 = document.getElementById("button2");
     const safeTop = getSafeTop();
+    const avoidRects = getAvoidRects();
 
     [button1, button2].forEach((button) => {
         if (!button || button.style.display === "none") return;
@@ -127,25 +168,33 @@ function moveButtonsRandomly() {
     const placeButton = (button, otherButton) => {
         if (!button || button.style.display === "none") return;
         const rect = button.getBoundingClientRect();
-        const maxLeft = Math.max(0, window.innerWidth - rect.width);
-        const maxTop = Math.max(safeTop, window.innerHeight - rect.height);
+        const padding = 8;
+        const maxLeft = Math.max(0, window.innerWidth - rect.width - padding);
+        const maxTop = Math.max(0, window.innerHeight - rect.height - padding);
+        const minTop = Math.min(safeTop, maxTop);
         let attempt = 0;
         let left = 0;
-        let top = safeTop;
+        let top = minTop;
 
         while (attempt < 50) {
             left = Math.floor(Math.random() * (maxLeft + 1));
             top = Math.floor(
-                safeTop + Math.random() * Math.max(0, maxTop - safeTop)
+                minTop + Math.random() * Math.max(0, maxTop - minTop)
             );
 
             button.style.left = `${left}px`;
             button.style.top = `${top}px`;
 
-            if (!otherButton || otherButton.style.display === "none") break;
             const rectA = button.getBoundingClientRect();
-            const rectB = otherButton.getBoundingClientRect();
-            if (!isOverlapping(rectA, rectB)) break;
+            const overlapOther =
+                otherButton && otherButton.style.display !== "none"
+                    ? isOverlapping(rectA, otherButton.getBoundingClientRect())
+                    : false;
+            const overlapAvoid = avoidRects.some((avoidRect) =>
+                isOverlapping(rectA, avoidRect)
+            );
+
+            if (!overlapOther && !overlapAvoid) break;
             attempt += 1;
         }
     };
@@ -171,6 +220,45 @@ function expandButton1ToCoverPage() {
     applyButton1Padding();
 }
 
+function getAdvancementContainer() {
+    let container = document.querySelector(".advancement-container");
+    if (!container) {
+        container = document.createElement("div");
+        container.className = "advancement-container";
+        document.body.appendChild(container);
+    }
+    return container;
+}
+
+function showAdvancement(title, description, duration = 3000) {
+    const container = getAdvancementContainer();
+    const toast = document.createElement("div");
+    toast.className = "advancement-toast";
+
+    const titleEl = document.createElement("div");
+    titleEl.className = "advancement-title";
+    titleEl.textContent = title;
+
+    const descEl = document.createElement("div");
+    descEl.className = "advancement-desc";
+    descEl.textContent = description;
+
+    toast.appendChild(titleEl);
+    toast.appendChild(descEl);
+    container.appendChild(toast);
+
+    requestAnimationFrame(() => {
+        toast.classList.add("show");
+    });
+
+    setTimeout(() => {
+        toast.classList.remove("show");
+        setTimeout(() => {
+            if (toast.parentNode) toast.parentNode.removeChild(toast);
+        }, 220);
+    }, Math.max(1000, duration));
+}
+
 document.getElementById("button1").addEventListener("click", function() {
     if (counter === 1) {
         const name = getNameFromQuery();
@@ -180,6 +268,7 @@ document.getElementById("button1").addEventListener("click", function() {
         document.querySelector("button#button2").style.display = "none";
         document.querySelector("img").style.display = "block";
         document.querySelector("button#button2").style.marginLeft = "320px";
+        showAdvancement("Love at First Click", "You said yes on the first try!");
     } else {
         const name = getNameFromQuery();
         document.getElementById("message").textContent = `YAAAY! I KNEW YOU WERE GOING TO DO IT! LOVE YOU TOO ${name}! ❤️`;
@@ -188,17 +277,25 @@ document.getElementById("button1").addEventListener("click", function() {
         document.querySelector("button#button2").style.display = "none";
         document.querySelector("img").style.display = "block";
         document.querySelector("button#button2").style.marginLeft = "320px";
+        showAdvancement("You Came Around", "You finally clicked yes.");
     }
     applyButton2Padding();
 });
 
 document.getElementById("button2").addEventListener("click", function() {
+    if (counter === 1) {
+        showAdvancement("First Rejection", "Ouch! You clicked no.");
+    }
+    if (counter === 3) {
+        showAdvancement("Still Nope", "Three no's already?!");
+    }
     if (counter === 5) {
+        showAdvancement("Cold Hearted", "Five no's in a row.");
         const result = confirm("Are you sure you want to keep rejecting me?");
         if (result) {
             const result2 = confirm("Are you REALLY sure?");
             if (result2) {
-                counter++;
+                
             } else {
                 const name = getNameFromQuery();
                 document.getElementById("message").textContent = `YAAAY! I KNEW YOU WERE GOING TO DO IT! LOVE YOU TOO ${name}! ❤️`;
@@ -207,6 +304,7 @@ document.getElementById("button2").addEventListener("click", function() {
                 document.querySelector("button#button2").style.display = "none";
                 document.querySelector("img").style.display = "block";
                 document.querySelector("button#button2").style.marginLeft = "320px";
+                return;
             }
         } else {
             const name = getNameFromQuery();
@@ -216,26 +314,33 @@ document.getElementById("button2").addEventListener("click", function() {
             document.querySelector("button#button2").style.display = "none";
             document.querySelector("img").style.display = "block";
             document.querySelector("button#button2").style.marginLeft = "320px";
+            return;
         }
-    } else {
-        imageChange();
-        button1PaddingVertical += 10;
-        button1PaddingHorizontal += 16;
-        button2PaddingVertical -= 5;
-        button2PaddingHorizontal -= 14;
-        if (button2PaddingVertical <= 0) {
-        document.getElementById("button2").style.display = "none";
-        expandButton1ToCoverPage();
-        }
-        console.log(button1PaddingVertical, button1PaddingHorizontal);
-        console.log(button2PaddingVertical, button2PaddingHorizontal);
-        counter++;
-        applyButton1Padding();
-        applyButton2Padding();
-        moveButtonsRandomly();
-        phraseChange();
-        buttonPhraseChange();
+
     }
+
+    if (counter === 8) {
+        showAdvancement("Persistent Rejection", "You kept rejecting even after all those confirmations!");
+    }
+
+    imageChange();
+    button1PaddingVertical += 10;
+    button1PaddingHorizontal += 16;
+    button2PaddingVertical -= 5;
+    button2PaddingHorizontal -= 14;
+    if (button2PaddingVertical <= 0) {
+    document.getElementById("button2").style.display = "none";
+    expandButton1ToCoverPage();
+    }
+    console.log(button1PaddingVertical, button1PaddingHorizontal);
+    console.log(button2PaddingVertical, button2PaddingHorizontal);
+    applyButton1Padding();
+    applyButton2Padding();
+    moveButtonsRandomly();
+    phraseChange();
+    buttonPhraseChange();
+
+    counter++;
     
 });
 setTitleWithName();
