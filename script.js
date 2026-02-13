@@ -324,6 +324,7 @@ document.getElementById("button1").addEventListener("click", function() {
             for a loooooong time (forever if possible :)). I think this is everything I wanted to say to you through this letter, but if
             I forgot to say something, just know that its also true and I love you with all my heart.
              </p>
+             <p style="margin-top: 20px;">I couldnt give you a letter at school, then here it is electronically!</p>
             <p style="margin-top: 40px;">Happy Valentines Day!</p>
             <p>❤️</p>
         `;
